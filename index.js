@@ -25,8 +25,8 @@ dbConnect().catch((err) => {
 });
 
 // Root route (for testing)
-app.get('/test', (req, res) => {
-  res.send('Welcome to the application deployed on Lambda!');
+app.get('/', (req, res) => {
+  res.send('Welcome to the application deployed on ec2');
 });
 
 
