@@ -6,7 +6,7 @@ const TaskRouters = require('./router/taskRouter');
 const subTaskRouter = require('./router/subTaskRouter');
 
 // const serverless = require('serverless-http');
-const port=process.env.PORT||4000;
+const port=process.env.PORT||3000;
 const app = express();
 
 app.use(express.static('public'));
