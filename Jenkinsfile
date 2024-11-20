@@ -6,16 +6,13 @@ pipeline {
         PATH = "${NODE_HOME}/bin:${env.PATH}"
     }
 
-    triggers {
-        // Poll GitHub or GitLab repository for changes every 5 minutes
-        pollSCM('H/1 * * * *')
-    }
-
     stages {
         stage('Checkout') {
             steps {
+                // Checkout the code from the repository
                 checkout scm
-                sh 'git status'  // To check the repository status and ensure changes are detected
+                sh 'git status'  // To check if changes are detected after checkout
+                sh 'git log -n 1 --oneline'  // Show the latest commit to ensure we have the latest code
             }
         }
 
@@ -32,6 +29,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
+                    // Run tests using npm
                     sh 'npm test'
                 }
             }
@@ -42,10 +40,10 @@ pipeline {
                 script {
                     // Stop and restart PM2 with the new code
                     sh '''
-                    pm2 stop all || true  # Stop all running PM2 processes
+                    pm2 stop nodejs-app || true  # Stop any running PM2 processes by name
                     pm2 start index.js --name "nodejs-app"  # Start the app with PM2
                     pm2 save  # Save the PM2 process list for recovery after reboot
-                    pm2 list  # Verify that the app is listed in PM2 processes
+                    pm2 list  # Verify the app is running and listed in PM2 processes
                     '''
                 }
             }
@@ -54,6 +52,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
+                    // This is the deployment step, add custom deployment logic if needed
                     echo 'Deployment Stage - Customize as needed'
                 }
             }
@@ -62,7 +61,8 @@ pipeline {
         stage('Clean Up') {
             steps {
                 script {
-                    sh 'pm2 stop all'  # Stop all PM2 processes if needed after deployment
+                    // Optional: stop PM2 processes if needed after deployment
+                    sh 'pm2 stop all'  # Stop all PM2 processes if you want to stop after deployment
                 }
             }
         }
