@@ -10,6 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                sh 'git status'  // Verify the current code and branch
             }
         }
 
@@ -19,6 +20,7 @@ pipeline {
                     // Clean install to make sure dependencies are up to date
                     sh 'rm -rf node_modules'
                     sh 'npm install'
+                    sh 'npm list'  // Verify dependencies are installed correctly
                 }
             }
         }
@@ -39,6 +41,7 @@ pipeline {
                     pm2 stop all || true
                     pm2 start index.js --name "nodejs-app"
                     pm2 save
+                    pm2 list  # List PM2 processes to verify if app started
                     '''
                 }
             }
@@ -47,10 +50,9 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Deploy to remote server if needed
                     echo 'Deployment Stage - Customize as needed'
-                    // Example:
-                    // sh 'ssh user@server "cd /path/to/app && git pull && pm2 restart app.js"'
+                    // Example for SSH deployment:
+                    // sh 'ssh user@server "cd /path/to/app && git pull && pm2 restart nodejs-app"'
                 }
             }
         }
