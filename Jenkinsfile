@@ -40,7 +40,7 @@ pipeline {
                     // Replace 'app.js' with your entry point
                     sh '''
                     pm2 stop all || true  # Stop any running PM2 processes, suppress errors if no processes are running
-                    pm2 start app.js --name "nodejs-app"  # Start the app with PM2
+                    pm2 start index.js --name "nodejs-app"  # Start the app with PM2
                     pm2 save  # Save the PM2 process list so it can be revived after reboot
                     '''
                 }
