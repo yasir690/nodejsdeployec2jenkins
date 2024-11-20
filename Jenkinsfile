@@ -6,11 +6,16 @@ pipeline {
         PATH = "${NODE_HOME}/bin:${env.PATH}"
     }
 
+    triggers {
+        // Poll GitHub or GitLab repository for changes every 5 minutes
+        pollSCM('H/1 * * * *')
+    }
+
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
-                sh 'git status'  // Verify the current code and branch
+                sh 'git status'  // To check the repository status and ensure changes are detected
             }
         }
 
@@ -20,7 +25,6 @@ pipeline {
                     // Clean install to make sure dependencies are up to date
                     sh 'rm -rf node_modules'
                     sh 'npm install'
-                    sh 'npm list'  // Verify dependencies are installed correctly
                 }
             }
         }
@@ -38,10 +42,10 @@ pipeline {
                 script {
                     // Stop and restart PM2 with the new code
                     sh '''
-                    pm2 stop all || true
-                    pm2 start index.js --name "nodejs-app"
-                    pm2 save
-                    pm2 list  # List PM2 processes to verify if app started
+                    pm2 stop all || true  # Stop all running PM2 processes
+                    pm2 start index.js --name "nodejs-app"  # Start the app with PM2
+                    pm2 save  # Save the PM2 process list for recovery after reboot
+                    pm2 list  # Verify that the app is listed in PM2 processes
                     '''
                 }
             }
@@ -51,8 +55,6 @@ pipeline {
             steps {
                 script {
                     echo 'Deployment Stage - Customize as needed'
-                    // Example for SSH deployment:
-                    // sh 'ssh user@server "cd /path/to/app && git pull && pm2 restart nodejs-app"'
                 }
             }
         }
@@ -60,7 +62,7 @@ pipeline {
         stage('Clean Up') {
             steps {
                 script {
-                    sh 'pm2 stop all'
+                    sh 'pm2 stop all'  # Stop all PM2 processes if needed after deployment
                 }
             }
         }
