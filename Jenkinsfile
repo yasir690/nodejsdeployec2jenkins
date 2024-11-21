@@ -18,7 +18,7 @@ pipeline {
                 
                 # Source nvm and install Node.js (latest or specific version)
                 export NVM_DIR="\$HOME/.nvm"
-                [ -s "\$NVM_DIR/nvm.sh" ] && \. "\$NVM_DIR/nvm.sh"
+                [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh"
                 nvm install node  # Install the latest version of Node.js
                 nvm use node      # Use the installed Node.js version
                 """
@@ -38,7 +38,7 @@ pipeline {
                 sh """
                 # Ensure NVM and Node.js are available before running npm
                 export NVM_DIR="\$HOME/.nvm"
-                [ -s "\$NVM_DIR/nvm.sh" ] && \. "\$NVM_DIR/nvm.sh"
+                [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh"
                 nvm use node  # Ensure correct Node version is being used
                 npm install   # Install npm dependencies
                 """
