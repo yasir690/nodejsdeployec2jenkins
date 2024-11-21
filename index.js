@@ -26,7 +26,7 @@ dbConnect().catch((err) => {
 
 // Root route (for testing)
 app.get('/', (req, res) => {
-  res.send('Welcome to the application deployed on ec2!!!');
+  res.send('Welcome to the application deployed on ec2');
 });
 
 
