@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        EC2_IP = 'http://13.233.118.141/'
+        EC2_IP = '13.233.118.141'
         SSH_KEY = 'C:/Users/Admin/Downloads/jenkins_keyss.pem'
     }
 
@@ -30,7 +30,8 @@ pipeline {
                         cd /home/ec2-user/nodejsdeployec2jenkins
                         git pull origin main
                         npm install
-                        pm2 restart app  // Restart the PM2 process named "app"
+                        pm2 stop app || true  // Stop the PM2 process if it's running
+                        pm2 start index.js --name app  // Start the app with PM2 and specify index.js as the entry point
                     EOF
                     """
                 }
