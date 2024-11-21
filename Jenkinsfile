@@ -12,12 +12,15 @@ pipeline {
                 // Ensure nvm is available and initialized using bash
                 sh """
                 # Ensure bash is used for loading nvm
-                if [ ! -d "$HOME/.nvm" ]; then
+                if [ ! -d "\$HOME/.nvm" ]; then
                     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
                 fi
                 
-                # Explicitly use bash to source nvm
-                bash -c 'export NVM_DIR="$HOME/.nvm" && [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh"'
+                # Source nvm and install Node.js (latest or specific version)
+                export NVM_DIR="\$HOME/.nvm"
+                [ -s "\$NVM_DIR/nvm.sh" ] && \. "\$NVM_DIR/nvm.sh"
+                nvm install node  # Install the latest version of Node.js
+                nvm use node      # Use the installed Node.js version
                 """
             }
         }
@@ -33,7 +36,11 @@ pipeline {
             steps {
                 // Install dependencies using npm
                 sh """
-                bash -c 'export NVM_DIR="\$HOME/.nvm" && [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh" && npm install'
+                # Ensure NVM and Node.js are available before running npm
+                export NVM_DIR="\$HOME/.nvm"
+                [ -s "\$NVM_DIR/nvm.sh" ] && \. "\$NVM_DIR/nvm.sh"
+                nvm use node  # Ensure correct Node version is being used
+                npm install   # Install npm dependencies
                 """
             }
         }
@@ -45,8 +52,10 @@ pipeline {
                     sh """
                     ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ec2-user@${EC2_IP} <<EOF
                         cd /home/ec2-user/nodejsdeployec2jenkins
+                        # Ensure NVM and Node.js are available on the EC2 instance
                         source ~/.nvm/nvm.sh
-                        npm install
+                        nvm use node  # Use correct Node version on EC2 instance
+                        npm install   # Install npm dependencies on EC2 instance
                         pm2 restart app
                     EOF
                     """
