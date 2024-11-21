@@ -9,13 +9,15 @@ pipeline {
     stages {
         stage('Setup NVM') {
             steps {
-                // Ensure nvm is available
+                // Ensure nvm is available and initialized using bash
                 sh """
-                # Install NVM if it doesn't exist (optional, if nvm is not already installed)
+                # Ensure bash is used for loading nvm
                 if [ ! -d "$HOME/.nvm" ]; then
-                  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-                  source $HOME/.nvm/nvm.sh
+                    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
                 fi
+                
+                # Explicitly use bash to source nvm
+                bash -c 'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
                 """
             }
         }
@@ -31,7 +33,7 @@ pipeline {
             steps {
                 // Install dependencies using npm
                 sh """
-                bash -c 'source /root/.nvm/nvm.sh && npm install'
+                bash -c 'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && npm install'
                 """
             }
         }
