@@ -9,8 +9,8 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the code from Git repository
-                git 'https://github.com/yasir690/nodejsdeployec2jenkins.git'
+                // Checkout the code from Git repository (with credentialsId and branch specified)
+                git credentialsId: '6129b58f-2f8d-41dd-bc67-e58b1dd76c3c', branch: 'main', url: 'https://github.com/yasir690/nodejsdeployec2jenkins.git'
             }
         }
 
@@ -30,8 +30,7 @@ pipeline {
                         cd /home/ec2-user/nodejsdeployec2jenkins
                         git pull origin main
                         npm install
-                        pm2 stop app || true  // Stop the PM2 process if it's running
-                        pm2 start index.js --name app  // Start the app with PM2 and specify index.js as the entry point
+                        pm2 restart app
                     EOF
                     """
                 }
