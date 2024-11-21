@@ -9,10 +9,10 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the code from the repository
+                // Checkout the latest code from the repository
                 checkout scm
-                sh 'git status'  // To check if changes are detected after checkout
-                sh 'git log -n 1 --oneline'  // Show the latest commit to ensure we have the latest code
+                sh 'git status'  // Show the repository status to verify the latest commit
+                sh 'git log -n 1 --oneline'  // Display the latest commit to ensure the correct version is checked out
             }
         }
 
@@ -29,7 +29,6 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    // Run tests using npm
                     sh 'npm test'
                 }
             }
@@ -40,10 +39,10 @@ pipeline {
                 script {
                     // Stop and restart PM2 with the new code
                     sh '''
-                    pm2 stop nodejs-app || true  # Stop any running PM2 processes by name
-                    pm2 start index.js --name "nodejs-app"  # Start the app with PM2
-                    pm2 save  # Save the PM2 process list for recovery after reboot
-                    pm2 list  # Verify the app is running and listed in PM2 processes
+                    pm2 stop nodejs-app || true  # Stop the app if it's running
+                    pm2 start index.js --name "nodejs-app"  # Restart the app with PM2
+                    pm2 save  # Save the PM2 process list
+                    pm2 list  # Verify that the app is running in PM2
                     '''
                 }
             }
@@ -52,7 +51,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // This is the deployment step, add custom deployment logic if needed
+                    // Optionally deploy your app to remote server if necessary
                     echo 'Deployment Stage - Customize as needed'
                 }
             }
@@ -61,8 +60,8 @@ pipeline {
         stage('Clean Up') {
             steps {
                 script {
-                    // Optional: stop PM2 processes if needed after deployment
-                    sh 'pm2 stop all'  # Stop all PM2 processes if you want to stop after deployment
+                    // Optional: Stop all PM2 processes after the build
+                    sh 'pm2 stop all'
                 }
             }
         }
