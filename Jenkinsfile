@@ -9,6 +9,7 @@ pipeline {
     triggers {
         // GitHub webhook trigger is set up in Jenkins, no need for pollSCM
         // So this section is omitted.
+         githubPush()
     }
 
     stages {
