@@ -16,8 +16,12 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                // Install dependencies using npm
-                sh 'npm install'
+                 // Install the correct version of node using nvm
+        sh """
+        source /root/.nvm/nvm.sh
+        nvm install v23.2.0  // Ensure the correct node version is available
+        npm install
+        """
             }
         }
 
