@@ -7,8 +7,8 @@ pipeline {
     }
 
     triggers {
-        // Poll GitHub repository for changes every 1 minute
-        pollSCM('H/1 * * * *')
+        // GitHub webhook trigger is set up in Jenkins, no need for pollSCM
+        // So this section is omitted.
     }
 
     stages {
