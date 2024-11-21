@@ -17,7 +17,7 @@ pipeline {
                 fi
                 
                 # Explicitly use bash to source nvm
-                bash -c 'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'
+                bash -c 'export NVM_DIR="$HOME/.nvm" && [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh"'
                 """
             }
         }
@@ -33,7 +33,7 @@ pipeline {
             steps {
                 // Install dependencies using npm
                 sh """
-                bash -c 'export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && npm install'
+                bash -c 'export NVM_DIR="\$HOME/.nvm" && [ -s "\$NVM_DIR/nvm.sh" ] && . "\$NVM_DIR/nvm.sh" && npm install'
                 """
             }
         }
@@ -45,7 +45,6 @@ pipeline {
                     sh """
                     ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ec2-user@${EC2_IP} <<EOF
                         cd /home/ec2-user/nodejsdeployec2jenkins
-                        git pull origin main
                         source ~/.nvm/nvm.sh
                         npm install
                         pm2 restart app
